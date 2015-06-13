@@ -5,26 +5,16 @@ import java.util.List;
 
 public class Matrix {
 	
-//	public static void main(String[] args) {
-//		Double[][] a = {{2D, 3D}, {2D, 5D}};
-//		List<List<Double>> b = new ArrayList<List<Double>>();
-//		for (Double[] doubles : a) {
-//			List<Double> add = new ArrayList<Double>();
-//			for (Double double1 : doubles) {
-//				add.add(double1);
-//			}
-//			b.add(add);
-//		}
-//		Matrix matrix = new Matrix(b);
-//		matrix.inverse().print();;
-//	}
-	
 	public List<List<Double>> matrix;
 	
 	public Matrix(List<List<Double>> matrix){
 		this.matrix = matrix;
 	}
 	
+	public Matrix() {
+		this.matrix = new ArrayList<List<Double>>();
+	}
+
 	public Matrix times(Matrix matrix2){
 		List<List<Double>> matrix1 = this.matrix;
 		if (matrix1.get(0).size() != matrix2.rows()) return null;
@@ -113,6 +103,58 @@ public class Matrix {
 		return new Matrix(coFactors).transpose().times(1 / new Matrix(matrix).determinant());
 	}
 	
+	public static Matrix create(List<Double> list) {
+		if (Math.sqrt(list.size()) % 1 != 0) return null;
+		Matrix ret = new Matrix();
+		for (int i = 0; i < Math.sqrt(list.size()); i++) {
+			List<Double> add = new ArrayList<Double>();
+			for (int j = 0; j < Math.sqrt(list.size()); j++) {
+				add.add(list.get((int) (i * Math.sqrt(list.size()) + j)));
+			}
+			ret.add(add);
+		}
+		return ret;
+	}
+	
+	public static Matrix create(Double[] array) {
+		if (Math.sqrt(array.length) % 1 != 0) return null;
+		Matrix ret = new Matrix();
+		for (int i = 0; i < Math.sqrt(array.length); i++) {
+			List<Double> add = new ArrayList<Double>();
+			for (int j = 0; j < Math.sqrt(array.length); j++) {
+				add.add(array[(int) (i * Math.sqrt(array.length) + j)]);
+			}
+			ret.add(add);
+		}
+		return ret;
+	}
+	
+	public static Matrix create(int[] array) {
+		if (Math.sqrt(array.length) % 1 != 0) return null;
+		Matrix ret = new Matrix();
+		for (int i = 0; i < Math.sqrt(array.length); i++) {
+			List<Integer> add = new ArrayList<Integer>();
+			for (int j = 0; j < Math.sqrt(array.length); j++) {
+				add.add(array[(int) (i * Math.sqrt(array.length) + j)]);
+			}
+			ret.addInt(add);
+		}
+		return ret;
+	}
+	
+	public static Matrix identiy(int size) {
+		Matrix matrix = new Matrix();
+		for (int i = 0; i < size; i++) {
+			List<Double> add = new ArrayList<Double>();
+			for (int j = 0; j < size; j++) {
+				if (j == i) add.add(1D);
+				else add.add(0D);
+			}
+			matrix.add(add);
+		}
+		return matrix;
+	}
+	
 	public int rows() {
 		List<List<Double>> matrix = this.matrix;
 		return matrix.size();
@@ -141,6 +183,14 @@ public class Matrix {
 	
 	public void add(List<Double> list) {
 		this.matrix.add(list);
+	}
+	
+	public void addInt(List<Integer> list) {
+		List<Double> dList = new ArrayList<Double>();
+		for (int i : list) {
+			dList.add((double) i);
+		}
+		this.matrix.add(dList);
 	}
 	
 	public double coFactor(int rowIndex, int columnIndex) {

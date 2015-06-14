@@ -55,7 +55,7 @@ public class Matrix {
 				list1.add(double1);
 			}
 			ret.add(list1);
-		}
+		} 
 		ret.remove(rowIndex);
 		for (int i = 0; i < ret.size(); i++) {
 			ret.get(i).remove(columnIndex);
@@ -142,7 +142,7 @@ public class Matrix {
 		return ret;
 	}
 	
-	public static Matrix identiy(int size) {
+	public static Matrix identity(int size) {
 		Matrix matrix = new Matrix();
 		for (int i = 0; i < size; i++) {
 			List<Double> add = new ArrayList<Double>();

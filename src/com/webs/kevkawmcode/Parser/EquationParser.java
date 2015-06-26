@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EquationParser {
-
+	
 	public static List<String> parse(String eq, boolean print) {
 		// Removing spaces
 		String eqBU = eq;
@@ -61,6 +61,7 @@ public class EquationParser {
 			}
 		}
 		ret_.add(str);
+		System.out.println(ret_);
 		// Separating variables from numbers
 		List<String> ret = new ArrayList<String>();
 		for (int i = 0; i < ret_.size(); i++) {
@@ -75,13 +76,11 @@ public class EquationParser {
 				}
 				String str_ = "";
 				for (int j = 0; j < str2.length(); j++) {
-					if (isNumber(Character.toString(str2.charAt(j))))
-						str_ += str2.charAt(j);
+					if (isNumber(Character.toString(str2.charAt(j)))) str_ += str2.charAt(j);
 					if (isVariable(Character.toString(str2.charAt(j))) || j == str2.length() - 1) {
-						if (!str_.isEmpty())
-							nums.add(str_);
+						if (!str_.isEmpty()) nums.add(str_);
 						str_ = "";
-					}
+					} else if (str2.charAt(j) == '-') str_ += str2.charAt(j);
 				}
 			}
 			if (changed) {
@@ -98,6 +97,7 @@ public class EquationParser {
 				ret.add(str2);
 			}
 		}
+		System.out.println(ret);
 		// Separating "-"s from stuff
 		boolean changed = true;
 		while (changed) {
@@ -152,7 +152,7 @@ public class EquationParser {
 				ret.remove(i + 1);
 			}
 		}
-		// Do signal games
+		// Do signal stuff
 		changed = true;
 		while (changed) {
 			changed = false;
@@ -181,7 +181,7 @@ public class EquationParser {
 			}
 		}
 		// Removing some extra junk
-		// At beginning
+			// At beginning
 		while (true) {
 			if ((ret.get(0).equals("-") && isNumber(ret.get(1))) || ret.get(0).equals("+")) {
 				ret.remove(0);

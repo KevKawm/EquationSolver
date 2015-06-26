@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EquationParser {
-	
+
+	public static void main(String[] args) {
+		parse("sin(xz*3z)(4f+6)+xy + 2(x^2)y", true);
+	}
+
 	public static List<String> parse(String eq, boolean print) {
 		// Removing spaces
 		String eqBU = eq;
@@ -14,7 +18,7 @@ public class EquationParser {
 				eq += eqBU.charAt(i);
 		}
 		// Remove some operations
-			// At beginning
+		// At beginning
 		while (true) {
 			if (eq.startsWith("+") || eq.startsWith("*") || eq.startsWith("/") || eq.startsWith("!")) {
 				eq = eq.substring(1);
@@ -22,7 +26,7 @@ public class EquationParser {
 				break;
 			}
 		}
-			// At end
+		// At end
 		while (true) {
 			if (eq.endsWith("+") || eq.endsWith("-") || eq.endsWith("*") || eq.endsWith("/")) {
 				eq = eq.substring(0, eq.length() - 1);
@@ -31,7 +35,8 @@ public class EquationParser {
 			}
 		}
 		// Adding "=0"
-		if (!eq.contains("=")) eq += "=0";
+		if (!eq.contains("="))
+			eq += "=0";
 		// Separating everything
 		List<String> ret_ = new ArrayList<String>();
 		String str = "";
@@ -61,7 +66,6 @@ public class EquationParser {
 			}
 		}
 		ret_.add(str);
-		System.out.println(ret_);
 		// Separating variables from numbers
 		List<String> ret = new ArrayList<String>();
 		for (int i = 0; i < ret_.size(); i++) {
@@ -76,11 +80,14 @@ public class EquationParser {
 				}
 				String str_ = "";
 				for (int j = 0; j < str2.length(); j++) {
-					if (isNumber(Character.toString(str2.charAt(j)))) str_ += str2.charAt(j);
+					if (isNumber(Character.toString(str2.charAt(j))))
+						str_ += str2.charAt(j);
 					if (isVariable(Character.toString(str2.charAt(j))) || j == str2.length() - 1) {
-						if (!str_.isEmpty()) nums.add(str_);
+						if (!str_.isEmpty())
+							nums.add(str_);
 						str_ = "";
-					} else if (str2.charAt(j) == '-') str_ += str2.charAt(j);
+					} else if (str2.charAt(j) == '-')
+						str_ += str2.charAt(j);
 				}
 			}
 			if (changed) {
@@ -97,7 +104,6 @@ public class EquationParser {
 				ret.add(str2);
 			}
 		}
-		System.out.println(ret);
 		// Separating "-"s from stuff
 		boolean changed = true;
 		while (changed) {
@@ -197,14 +203,35 @@ public class EquationParser {
 				break;
 			}
 		}
-		if (print) System.out.println(ret);
+		// Separating variables from themselves
+		for (int i = 0; i < ret.size(); i++) {
+			if (!isOp(ret.get(i)) && !isNumber(ret.get(i)) && ret.get(i).length() > 1) {
+				String vars = ret.get(i);
+				ret.remove(i);
+				for (int j = vars.length() - 1; j >= 0; j--) {
+					ret.add(i, Character.toString(vars.charAt(j)));
+					if (j != 0) ret.add(i, "*");
+				}
+				i = 0;
+			}
+		}
+		// Add "*" next to parenthesis
+		for (int i = 1; i < ret.size() - 1; i++) {
+			if (ret.get(i).equals("(")) {
+				if (!isOp(ret.get(i - 1)) || ret.get(i - 1).equals(")")) ret.add(i, "*");
+			} else if (ret.get(i).equals(")")) {
+				if (!isOp(ret.get(i + 1))) ret.add(i + 1, "*");
+			}
+		}
+		if (print)
+			System.out.println(ret);
 		return ret;
 	}
 
 	public static List<String> ops() {
-		
-		String[] array = { "=", "+", "-", "*", "/", "(", ")", "[", "]", "{", "}", "^", "" , "ln", "log", "sin", "cos", "tg", "tan", "!", "sen", "abs", "mod" };
-		
+
+		String[] array = { "=", "+", "-", "*", "/", "(", ")", "[", "]", "{", "}", "^", "ln", "log", "sin", "cos", "tg", "tan", "!", "sen", "abs", "mod", "?", "floor", "ceiling", "sqrt", "%"};
+
 		List<String> ret = new ArrayList<String>();
 		for (String i : array) {
 			ret.add(i);
